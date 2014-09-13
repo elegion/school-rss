@@ -4,12 +4,13 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
  * @author Daniel Serdyukov
  */
-@Root(name = "channel", strict = true)
+@Root(name = "channel", strict = false)
 public class Channel {
 
     @Element(name = "title")
@@ -20,5 +21,9 @@ public class Channel {
 
     @ElementList(name = "item", inline = true)
     private List<News> mNews;
+
+    public List<News> getNews() {
+        return mNews == null ? Collections.<News>emptyList() : mNews;
+    }
 
 }

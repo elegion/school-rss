@@ -6,7 +6,7 @@ import org.simpleframework.xml.Root;
 /**
  * @author Daniel Serdyukov
  */
-@Root(name = "item", strict = true)
+@Root(name = "item", strict = false)
 public class News {
 
     @Element(name = "title")
@@ -17,5 +17,10 @@ public class News {
 
     @Element(name = "pubDate")
     private String mPubDate;
+
+    @Override
+    public String toString() {
+        return mTitle;
+    }
 
 }
