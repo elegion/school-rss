@@ -20,5 +20,10 @@
             </intent-filter>
         </activity>
 
+        <provider
+            android:name=".sqlite.SQLiteProvider"
+            android:authorities="${applicationId}"
+            android:exported="false" />
+
     </application>
 </manifest>

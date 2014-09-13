@@ -1,5 +1,9 @@
 package com.elegion.rssreader.content;
 
+import android.net.Uri;
+
+import com.elegion.rssreader.BuildConfig;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
@@ -8,6 +12,8 @@ import org.simpleframework.xml.Root;
  */
 @Root(name = "item", strict = false)
 public class News {
+
+    public static final Uri URI = Uri.parse("content://" + BuildConfig.PACKAGE_NAME + "/news");
 
     @Element(name = "title")
     private String mTitle;
