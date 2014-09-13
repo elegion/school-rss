@@ -1,60 +1,73 @@
 package com.elegion.rssreader.loader;
 
-import android.content.AsyncTaskLoader;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.util.Log;
 
+import com.elegion.rssreader.api.RssService;
+import com.elegion.rssreader.content.Channel;
 import com.elegion.rssreader.content.News;
-import com.elegion.rssreader.content.Rss;
 
-import org.simpleframework.xml.core.Persister;
-
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Collections;
 import java.util.List;
+
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.converter.SimpleXMLConverter;
 
 /**
  * @author Daniel Serdyukov
  */
-public class AsyncRssLoader extends AsyncTaskLoader<List<News>> {
+public class AsyncRssLoader extends ChannelsLoader {
 
-    private List<News> mNews;
+    private final String mEndpoint;
 
-    public AsyncRssLoader(Context context) {
+    private final String mId;
+
+    private final String mFeedUrl;
+
+    public AsyncRssLoader(Context context, String endpoint, String id) {
         super(context);
+        mEndpoint = endpoint;
+        mId = id;
+        mFeedUrl = Uri.parse(endpoint)
+                .buildUpon()
+                .appendPath(id)
+                .build()
+                .toString();
     }
 
     @Override
-    public List<News> loadInBackground() {
-        final Persister persister = new Persister();
+    public Cursor loadInBackground() {
         try {
-            final InputStream stream = new URL("http://news.yandex.ru/auto_racing.rss").openStream();
-            try {
-                final Rss rss = persister.read(Rss.class, stream);
-                return rss.getChannel().getNews();
-            } finally {
-                stream.close();
+            final Channel channel = getService(mEndpoint).load(mId).getChannel();
+
+            final ContentResolver db = getContext().getContentResolver();
+            db.delete(Channel.URI, Channel.Columns.URL + "=?", new String[]{mFeedUrl});
+            final Uri uri = db.insert(Channel.URI, channel.toValues(mFeedUrl));
+            // content://com.elegion.rssreader/channels/1
+
+            final List<News> news = channel.getNews();
+            final ContentValues[] bulkNews = new ContentValues[news.size()];
+            for (int i = 0; i < news.size(); ++i) {
+                bulkNews[i] = news.get(i).toValues(uri.getLastPathSegment());
             }
-        } catch (Exception e) {
-            Log.e("MainActivity", e.getMessage(), e);
+            db.bulkInsert(News.URI, bulkNews);
+        } catch (RetrofitError e) {
+            Log.e("Retrofit", e.getMessage(), e);
         }
-        return Collections.emptyList();
+
+        return super.loadInBackground();
     }
 
-    @Override
-    public void deliverResult(List<News> data) {
-        mNews = data;
-        super.deliverResult(data);
-    }
-
-    @Override
-    protected void onStartLoading() {
-        if (mNews == null) {
-            forceLoad();
-        } else {
-            deliverResult(mNews);
-        }
+    RssService getService(String endpoint) {
+        return new RestAdapter.Builder()
+                .setEndpoint(endpoint)
+                .setConverter(new SimpleXMLConverter())
+                .build()
+                .create(RssService.class);
     }
 
 }

@@ -10,7 +10,7 @@ import com.elegion.rssreader.content.News;
  */
 public class NewsLoader extends CursorLoader {
 
-    public NewsLoader(Context context) {
+    public NewsLoader(Context context, long channelId) {
         super(context, News.URI, null, null, null, null);
     }
 

@@ -17,7 +17,7 @@ public class SQLiteProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "rss.db";
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 5;
 
     private SQLiteOpenHelper mHelper;
 
@@ -45,19 +45,7 @@ public class SQLiteProvider extends ContentProvider {
         if (SQLiteUriMatcher.match(uri) == SQLiteUriMatcher.NO_MATCH) {
             throw new SQLiteException("Uri not found " + uri.toString());
         }
-        final long lastInsertRowid = mHelper.getWritableDatabase().insert(
-                uri.getPathSegments().get(0),
-                BaseColumns._ID,
-                values
-        );
-        final Uri result = new Uri.Builder()
-                .scheme(uri.getScheme())
-                .authority(uri.getAuthority())
-                .path(uri.getPathSegments().get(0))
-                .path(String.valueOf(lastInsertRowid))
-                .build();
-        getContext().getContentResolver().notifyChange(uri, null);
-        return result;
+        return insert(uri, values, true);
     }
 
     @Override
@@ -86,6 +74,22 @@ public class SQLiteProvider extends ContentProvider {
     }
 
     @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        final SQLiteDatabase db = mHelper.getWritableDatabase();
+        db.beginTransactionNonExclusive();
+        try {
+            for (final ContentValues value : values) {
+                insert(uri, value, false);
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return values.length;
+    }
+
+    @Override
     public String getType(Uri uri) {
         final int match = SQLiteUriMatcher.match(uri);
         switch (match) {
@@ -111,6 +115,24 @@ public class SQLiteProvider extends ContentProvider {
         return cursor;
     }
 
+    public Uri insert(Uri uri, ContentValues values, boolean notify) {
+        final long lastInsertRowid = mHelper.getWritableDatabase().insert(
+                uri.getPathSegments().get(0),
+                BaseColumns._ID,
+                values
+        );
+        final Uri result = new Uri.Builder()
+                .scheme(uri.getScheme())
+                .authority(uri.getAuthority())
+                .path(uri.getPathSegments().get(0))
+                .path(String.valueOf(lastInsertRowid))
+                .build();
+        if (notify) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return result;
+    }
+
     private static final class SQLiteHelperImpl extends SQLiteOpenHelper {
 
         public SQLiteHelperImpl(Context context, String name, int version) {
@@ -119,9 +141,13 @@ public class SQLiteProvider extends ContentProvider {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL("CREATE TABLE IF NOT EXISTS channels(_id INTEGER PRIMARY KEY, title TEXT, link TEXT);");
+            db.execSQL("CREATE TABLE IF NOT EXISTS channels(_id INTEGER PRIMARY KEY, url TEXT, title TEXT, link TEXT);");
             db.execSQL("CREATE TABLE IF NOT EXISTS news(_id INTEGER PRIMARY KEY, title TEXT, link TEXT, pub_date TEXT, channel_id INTEGER);");
             db.execSQL("CREATE INDEX IF NOT EXISTS news_idx1 ON news(channel_id);");
+            db.execSQL("CREATE TRIGGER BEFORE DELETE ON channels" +
+                    " BEGIN" +
+                    " DELETE FROM news WHERE channel_id=OLD._id;" +
+                    " END;");
         }
 
         @Override

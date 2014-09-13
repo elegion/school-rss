@@ -1,6 +1,8 @@
 package com.elegion.rssreader.content;
 
+import android.content.ContentValues;
 import android.net.Uri;
+import android.provider.BaseColumns;
 
 import com.elegion.rssreader.BuildConfig;
 
@@ -30,6 +32,20 @@ public class Channel {
 
     public List<News> getNews() {
         return mNews == null ? Collections.<News>emptyList() : mNews;
+    }
+
+    public ContentValues toValues(String url) {
+        final ContentValues values = new ContentValues();
+        values.put(Columns.URL, url);
+        values.put(Columns.TITLE, mTitle);
+        values.put(Columns.LINK, mLink);
+        return values;
+    }
+
+    public static interface Columns extends BaseColumns {
+        String URL = "url";
+        String TITLE = "title";
+        String LINK = "link";
     }
 
 }

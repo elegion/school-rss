@@ -20,6 +20,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activity.NewsListActivity" />
+
         <provider
             android:name=".sqlite.SQLiteProvider"
             android:authorities="${applicationId}"
