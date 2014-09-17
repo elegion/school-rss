@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
@@ -20,6 +22,7 @@ import com.elegion.rssreader.loader.AsyncRssLoader;
 public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor>,
         AdapterView.OnItemClickListener {
 
+    private static final int SELECT_PICTURE = 777;
     private ListView mListView;
 
     private CursorAdapter mListAdapter;
@@ -37,6 +40,37 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         mListView.setAdapter(mListAdapter);
         getLoaderManager().initLoader(R.id.rss_loader, Bundle.EMPTY, this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.share) {
+            PocketActivity.start(this);
+        } else if (item.getItemId() == R.id.picture) {
+            selectImageFromGallery();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void selectImageFromGallery() {
+        Intent showGallery = new Intent(Intent.ACTION_GET_CONTENT);
+        showGallery.setType("image/*");
+        startActivityForResult(Intent.createChooser(showGallery,
+                                                    "Select Picture"), SELECT_PICTURE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SELECT_PICTURE && resultCode == RESULT_OK) {
+            data.getExtras();
+        }
     }
 
     @Override

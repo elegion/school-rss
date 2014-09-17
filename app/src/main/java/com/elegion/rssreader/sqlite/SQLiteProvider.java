@@ -17,7 +17,7 @@ public class SQLiteProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "rss.db";
 
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     private SQLiteOpenHelper mHelper;
 
@@ -148,12 +148,14 @@ public class SQLiteProvider extends ContentProvider {
                     " BEGIN" +
                     " DELETE FROM news WHERE channel_id=OLD._id;" +
                     " END;");
+            db.execSQL("CREATE TABLE IF NOT EXISTS share(_id INTEGER PRIMARY KEY, content TEXT, title TEXT);");
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             db.execSQL("DROP TABLE IF EXISTS channels;");
             db.execSQL("DROP TABLE IF EXISTS news;");
+            db.execSQL("DROP TABLE IF EXISTS share;");
             onCreate(db);
         }
 

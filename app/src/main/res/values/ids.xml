@@ -4,5 +4,6 @@
     <item name="rss_loader" type="id" />
     <item name="channels_loader" type="id" />
     <item name="news_loader" type="id" />
+    <item name="loader_share" type="id"/>
 
 </resources>
