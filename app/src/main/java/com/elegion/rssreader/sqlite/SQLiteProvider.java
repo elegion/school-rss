@@ -17,7 +17,7 @@ public class SQLiteProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "rss.db";
 
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     private SQLiteOpenHelper mHelper;
 
@@ -142,7 +142,9 @@ public class SQLiteProvider extends ContentProvider {
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL("CREATE TABLE IF NOT EXISTS channels(_id INTEGER PRIMARY KEY, url TEXT, title TEXT, link TEXT);");
-            db.execSQL("CREATE TABLE IF NOT EXISTS news(_id INTEGER PRIMARY KEY, title TEXT, link TEXT, pub_date TEXT, channel_id INTEGER);");
+            db.execSQL("CREATE TABLE IF NOT EXISTS news(_id INTEGER PRIMARY KEY, title TEXT, " +
+                    "link TEXT, pub_date TEXT, channel_id INTEGER," +
+                    "full_text TEXT, image_url TEXT);");
             db.execSQL("CREATE INDEX IF NOT EXISTS news_idx1 ON news(channel_id);");
             db.execSQL("CREATE TRIGGER BEFORE DELETE ON channels" +
                     " BEGIN" +

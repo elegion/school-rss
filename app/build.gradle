@@ -30,6 +30,7 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:1.6.+'
     compile 'com.squareup.okhttp:okhttp:2.0.+'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.+'
+    compile 'com.squareup.picasso:picasso:2.3.4'
     compile('com.squareup.retrofit:converter-simplexml:1.6.+') {
         exclude module: 'stax'
         exclude module: 'stax-api'

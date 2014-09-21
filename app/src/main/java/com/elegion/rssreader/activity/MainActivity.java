@@ -54,7 +54,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if (R.id.rss_loader == id) {
-            return new AsyncRssLoader(getApplicationContext(), "http://news.yandex.ru/", "auto_racing.rss");
+            return new AsyncRssLoader(getApplicationContext(), "http://www.vesti.ru/", "vesti.rss");
         }
         return null;
     }
