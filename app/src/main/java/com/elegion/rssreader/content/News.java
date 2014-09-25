@@ -38,6 +38,9 @@ public class News {
     @Namespace(prefix = "yandex")
     private String mFullText;
 
+    @Element(name = "description")
+    private String mDescription;
+
     @Override
     public String toString() {
         return mTitle;
@@ -49,7 +52,8 @@ public class News {
         values.put(Columns.LINK, mLink);
         values.put(Columns.PUB_DATE, mPubDate);
         values.put(Columns.CHANNEL_ID, channelId);
-        values.put(Columns.FULL_TEXT, mFullText);
+        values.put(Columns.FULL_TEXT, !TextUtils.isEmpty(mFullText) ?
+                mFullText : mDescription);
         values.put(Columns.IMAGE_URL, getImageUrl());
         return values;
     }

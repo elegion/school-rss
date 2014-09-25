@@ -18,9 +18,16 @@ import com.squareup.picasso.Picasso;
  */
 public class NewsListAdapter extends ResourceCursorAdapter {
 
+    private int mSelectedId = -1;
+
     public NewsListAdapter(Context context, Cursor c) {
         super(context, R.layout.li_news, c,
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+    }
+
+    public void setSelectedId(int selectedId) {
+        mSelectedId = selectedId;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -36,6 +43,10 @@ public class NewsListAdapter extends ResourceCursorAdapter {
             imageView.setVisibility(View.VISIBLE);
             Picasso.with(context).load(imageUrl).into(imageView);
         }
+        View innerLayout = view.findViewById(R.id.inner_layout);
+        innerLayout.setBackgroundColor(context.getResources().getColor(
+                mSelectedId == cursor.getPosition() ?
+                        android.R.color.holo_green_light : android.R.color.transparent));
     }
 
 }

@@ -3,7 +3,11 @@
 
     <string name="app_name">RssReader</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_refresh">Refresh</string>
     <string name="title_activity_news_card">NewsCardActivity</string>
+    <string name="dialog_refresh_msg">Хотите ли вы обновить?</string>
+    <string name="dialog_refresh_cancel">Обновление отменено!</string>
+
+    <string name="pager_from_xml_tag">pagerTag</string>
 
 </resources>

@@ -1,7 +1,7 @@
 package com.elegion.rssreader.loader;
 
 import android.content.Context;
-import android.content.CursorLoader;
+import android.support.v4.content.CursorLoader;
 
 import com.elegion.rssreader.content.News;
 

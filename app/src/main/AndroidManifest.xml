@@ -26,10 +26,6 @@
             android:authorities="com.elegion.rssreader"
             android:exported="false" />
 
-        <activity
-            android:name="com.elegion.rssreader.activity.NewsCardActivity"
-            android:label="@string/title_activity_news_card" >
-        </activity>
     </application>
 
 </manifest>
