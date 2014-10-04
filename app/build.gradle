@@ -10,6 +10,12 @@ android {
         targetSdkVersion 20
         versionCode 1
         versionName "1.0"
+
+        buildConfigField "String", "GCM_SENDER_ID", '"478084109486"'
+
+        manifestPlaceholders = [
+                googleApiKey: "AIzaSyB3HECJFlNaEsNezjO9OFoNhk5HEQ9o7p0"
+        ]
     }
 
     compileOptions {
@@ -17,15 +23,25 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
 
+    signingConfigs {
+        debug {
+            storeFile file("debug.jks")
+        }
+    }
+
     buildTypes {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            signingConfig signingConfigs.debug
+        }
     }
 }
 
 dependencies {
+    compile 'com.google.android.gms:play-services:5.0.+'
     compile 'com.android.support:support-v13:20.0.+'
     compile 'com.squareup.retrofit:retrofit:1.6.+'
     compile 'com.squareup.okhttp:okhttp:2.0.+'

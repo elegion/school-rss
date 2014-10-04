@@ -9,5 +9,6 @@
     <string name="dialog_refresh_cancel">Обновление отменено!</string>
 
     <string name="pager_from_xml_tag">pagerTag</string>
+    <string name="sync_notification_message">Загружены новые новости</string>
 
 </resources>
