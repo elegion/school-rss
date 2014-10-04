@@ -20,7 +20,8 @@ import android.widget.Toast;
 import com.elegion.rssreader.R;
 import com.elegion.rssreader.content.Channel;
 import com.elegion.rssreader.content.News;
-import com.elegion.rssreader.loader.AsyncRssLoader;
+import com.elegion.rssreader.loader.ChannelsLoader;
+import com.elegion.rssreader.sync.SyncService;
 
 public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor>,
         AdapterView.OnItemClickListener {
@@ -70,9 +71,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            mListAdapter.swapCursor(null);
-                            getLoaderManager().restartLoader(R.id.rss_loader,
-                                    Bundle.EMPTY, MainActivity.this);
+                            startService(SyncService.sync(getApplicationContext()));
                         }
                     })
                     .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -92,7 +91,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if (R.id.rss_loader == id) {
-            return new AsyncRssLoader(getApplicationContext(), "http://www.vesti.ru/", "vesti.rss");
+            return new ChannelsLoader(getApplicationContext());
         }
         return null;
     }

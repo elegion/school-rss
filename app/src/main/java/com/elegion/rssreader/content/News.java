@@ -38,7 +38,7 @@ public class News {
     @Namespace(prefix = "yandex")
     private String mFullText;
 
-    @Element(name = "description")
+    @Element(name = "description", required = false)
     private String mDescription;
 
     @Override
@@ -60,9 +60,9 @@ public class News {
 
     private String getImageUrl() {
         if (mEnclosures != null) {
-            for (Enclosure enclosure: mEnclosures) {
+            for (Enclosure enclosure : mEnclosures) {
                 if (!TextUtils.isEmpty(enclosure.getType()) &&
-                   enclosure.getType().startsWith("image")) {
+                        enclosure.getType().startsWith("image")) {
                     return enclosure.getUrl();
                 }
             }
