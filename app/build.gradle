@@ -43,6 +43,7 @@ android {
 dependencies {
     compile 'com.google.android.gms:play-services:5.0.+'
     compile 'com.android.support:support-v13:20.0.+'
+    compile 'org.simpleframework:simple-xml:2.7.+'
     compile 'com.squareup.retrofit:retrofit:1.6.+'
     compile 'com.squareup.okhttp:okhttp:2.0.+'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.+'
